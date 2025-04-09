@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { BASE_BLOCK_SIZE, COLOR } from "./const.js";
+import { BASE_BLOCK_SIZE, COLOR } from "../../const.js";
 
 export default class BlockModel {
   #width;
@@ -25,6 +25,14 @@ export default class BlockModel {
 
     this.#mesh = new THREE.Mesh(this.#geometry, this.#material);
     this.#mesh.position.set(...initPosition);
+  }
+
+  get width() {
+    return this.#width;
+  }
+
+  get depth() {
+    return this.#depth;
   }
 
   get mesh() {

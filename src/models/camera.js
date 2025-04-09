@@ -1,3 +1,4 @@
+import gsap from "gsap";
 import * as THREE from "three";
 
 export default class CameraModel {
@@ -34,6 +35,20 @@ export default class CameraModel {
     this.instance.right = this.#viewDistance * this.#stage.aspectRatio;
 
     this.instance.updateProjectionMatrix();
+  }
+
+  syncPosition({ x, y, z }) {
+    gsap.to(this.instance.position, {
+      ease: "expo.out",
+      duration: 1,
+      x: this.#initialPosition.x + x,
+      y: this.#initialPosition.y + y,
+      z: this.#initialPosition.z + z,
+    });
+  }
+
+  resetPosition() {
+    this.instance.position.set(...Object.values(this.#initialPosition));
   }
 
   get instance() {

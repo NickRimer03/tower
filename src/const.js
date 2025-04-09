@@ -14,4 +14,11 @@ export const COLOR = {
 
 export const SPEED_FACTOR = 10;
 
+export const FALL_SPEED_FACTOR = 25;
+
 export const MOVING_RANGE = 15;
+
+export const AXIS = {
+  X: "x",
+  Z: "z",
+};

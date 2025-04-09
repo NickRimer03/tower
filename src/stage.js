@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import CameraModel from "./camera.js";
 import { COLOR } from "./const.js";
+import CameraModel from "./models/camera.js";
 
 export default class Stage {
   #sizes = {
@@ -44,13 +44,13 @@ export default class Stage {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
 
-    this.#camera.update();
+    this.camera.update();
 
     this.#updateRenderer();
   }
 
   renderFrame() {
-    this.#renderer.render(this.scene, this.#camera.instance);
+    this.#renderer.render(this.scene, this.camera.instance);
   }
 
   destroy() {
@@ -67,6 +67,10 @@ export default class Stage {
 
   get scene() {
     return this.#scene;
+  }
+
+  get camera() {
+    return this.#camera;
   }
 
   get aspectRatio() {

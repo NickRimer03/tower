@@ -1,39 +1,35 @@
 import * as THREE from "three";
-import BlockModel from "./block.js";
-import { BASE_BLOCK_SIZE, COLOR, MOVING_RANGE, SPEED_FACTOR } from "./const.js";
 import Stage from "./stage.js";
+import Tower from "./tower.js";
 
 export default class Game {
   #canvas = document.getElementById("game");
+  #board = document.getElementById("board");
+  #restartButton = document.getElementById("restart-button");
   #clock = new THREE.Clock();
   #previousTimer = 0;
-  #blockDirection = 1;
+  #isGameOver = false;
   #stage;
-  #baseBlock;
-  #movingBlock;
+  #tower;
 
   constructor() {
     this.#stage = new Stage(this.#canvas);
 
-    this.#baseBlock = new BlockModel({ ...BASE_BLOCK_SIZE, color: COLOR.baseBlock });
-    this.#movingBlock = new BlockModel({
-      ...BASE_BLOCK_SIZE,
-      initPosition: new THREE.Vector3(-10, 3, 0),
-      color: COLOR.movingBlock,
-    });
+    this.#tower = new Tower({ stage: this.#stage, onFinish: () => this.#end() });
 
     this.#init();
   }
 
   #init() {
-    this.#stage.scene.add(this.#baseBlock.mesh);
-    this.#stage.scene.add(this.#movingBlock.mesh);
-
     this.#tick();
-  }
 
-  #reverseDirection() {
-    this.#blockDirection *= -1;
+    this.#canvas.addEventListener("click", () => {
+      if (this.#isGameOver) return;
+
+      this.#tower.place();
+    });
+
+    this.#restartButton.addEventListener("click", () => this.#restart());
   }
 
   #tick() {
@@ -41,19 +37,23 @@ export default class Game {
     const delta = elapsedTime - this.#previousTimer;
     this.#previousTimer = elapsedTime;
 
-    if (this.#movingBlock.mesh.position.x > MOVING_RANGE) {
-      this.#movingBlock.mesh.position.x = MOVING_RANGE;
-      this.#reverseDirection();
-    }
-    if (this.#movingBlock.mesh.position.x < -MOVING_RANGE) {
-      this.#movingBlock.mesh.position.x = -MOVING_RANGE;
-      this.#reverseDirection();
-    }
-
-    this.#movingBlock.mesh.position.x += delta * SPEED_FACTOR * this.#blockDirection;
+    this.#tower.tick(delta);
 
     this.#stage.renderFrame();
 
     requestAnimationFrame(() => this.#tick());
+  }
+
+  #end() {
+    this.#isGameOver = true;
+    this.#board.style.display = "flex";
+  }
+
+  #restart() {
+    this.#stage.camera.resetPosition();
+    this.#tower.reset();
+
+    this.#isGameOver = false;
+    this.#board.style.display = "none";
   }
 }
