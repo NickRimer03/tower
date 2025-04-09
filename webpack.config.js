@@ -40,6 +40,19 @@ export default (env, argv) => {
           test: /\.html$/,
           use: ["html-loader"],
         },
+        {
+          test: /\.s[ca]ss/,
+          use: [
+            "style-loader",
+            "css-loader",
+            {
+              loader: "sass-loader",
+              options: {
+                api: "modern",
+              },
+            },
+          ],
+        },
       ],
     },
     plugins: [
